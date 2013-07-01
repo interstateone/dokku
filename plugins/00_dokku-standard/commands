@@ -8,11 +8,35 @@ set -e; case "$1" in
   url)
     echo "http://$(< "/home/git/$2/ADDRESS")"
     ;;
-  
+
+  start)
+    CONTAINER=$(< "/home/git/$2/CONTAINER")
+    docker start $CONTAINER
+    ;;
+
+  stop)
+    CONTAINER=$(< "/home/git/$2/CONTAINER")
+    docker stop $CONTAINER
+    ;;
+
+  restart)
+    CONTAINER=$(< "/home/git/$2/CONTAINER")
+    docker restart $CONTAINER
+    ;;
+
+  run)
+    CONTAINER="app/$2"
+    docker run -i -t -e "PORT=$PORT" $CONTAINER ${@:3}
+    ;;
+
   help)
     cat && cat<<EOF
-    logs <app>      Show the last logs for an application
-    url <app>       Show the URL for an application
+    logs <app>             Show the last logs for an application
+    url <app>              Show the URL for an application
+    start <app>            Start a stopped application
+    stop <app>             Stop a running application
+    restart <app>          Restart a running application
+    run <app> <command>    Run a command in a new instance of an application
 EOF
     ;;
 
